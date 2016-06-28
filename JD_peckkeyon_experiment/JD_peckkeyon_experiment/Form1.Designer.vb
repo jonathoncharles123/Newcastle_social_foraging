@@ -42,8 +42,8 @@ Partial Class Form1
         Me.Label9 = New System.Windows.Forms.Label()
         Me.txtDirectory = New System.Windows.Forms.TextBox()
         Me.Label11 = New System.Windows.Forms.Label()
-        Me.txtDate = New System.Windows.Forms.TextBox()
         Me.GroupBox2 = New System.Windows.Forms.GroupBox()
+        Me.DatePicker = New System.Windows.Forms.DateTimePicker()
         Me.txtTime = New System.Windows.Forms.TextBox()
         Me.Label12 = New System.Windows.Forms.Label()
         Me.cmdConnect = New System.Windows.Forms.Button()
@@ -238,18 +238,11 @@ Partial Class Form1
         Me.Label11.TabIndex = 23
         Me.Label11.Text = "Choose directory for datafile csv:"
         '
-        'txtDate
-        '
-        Me.txtDate.Location = New System.Drawing.Point(55, 49)
-        Me.txtDate.Name = "txtDate"
-        Me.txtDate.Size = New System.Drawing.Size(73, 20)
-        Me.txtDate.TabIndex = 44
-        '
         'GroupBox2
         '
+        Me.GroupBox2.Controls.Add(Me.DatePicker)
         Me.GroupBox2.Controls.Add(Me.txtTime)
         Me.GroupBox2.Controls.Add(Me.Label12)
-        Me.GroupBox2.Controls.Add(Me.txtDate)
         Me.GroupBox2.Controls.Add(Me.Label9)
         Me.GroupBox2.Controls.Add(Me.chkImmediate)
         Me.GroupBox2.Location = New System.Drawing.Point(294, 48)
@@ -258,6 +251,15 @@ Partial Class Form1
         Me.GroupBox2.TabIndex = 46
         Me.GroupBox2.TabStop = False
         Me.GroupBox2.Text = "Start"
+        '
+        'DatePicker
+        '
+        Me.DatePicker.Format = System.Windows.Forms.DateTimePickerFormat.[Short]
+        Me.DatePicker.Location = New System.Drawing.Point(56, 52)
+        Me.DatePicker.Name = "DatePicker"
+        Me.DatePicker.Size = New System.Drawing.Size(74, 20)
+        Me.DatePicker.TabIndex = 66
+        Me.DatePicker.Value = New Date(2016, 6, 30, 0, 0, 0, 0)
         '
         'txtTime
         '
@@ -450,7 +452,6 @@ Partial Class Form1
     Friend WithEvents Label9 As Label
     Friend WithEvents txtDirectory As TextBox
     Friend WithEvents Label11 As Label
-    Friend WithEvents txtDate As TextBox
     Friend WithEvents GroupBox2 As GroupBox
     Friend WithEvents txtTime As TextBox
     Friend WithEvents Label12 As Label
@@ -468,4 +469,5 @@ Partial Class Form1
     Friend WithEvents GroupBox3 As GroupBox
     Friend WithEvents Timer1 As Timer
     Friend WithEvents txtTry2 As TextBox
+    Friend WithEvents DatePicker As DateTimePicker
 End Class

@@ -1,9 +1,13 @@
 ﻿Option Explicit On
+Option Strict On
 Imports AxWHISKERSDKLib
 Imports System.IO
 
 Public Class Form1
     'Written as an experiment by Jonathon Dunn June 2016
+
+#Region "Declarations"
+
 
     'Devices: these must match Whisker server device names in the inverted commas
     'Purpose = to ensure that any spelling mistakes are spotted
@@ -24,19 +28,25 @@ Public Class Form1
     Private GoodTrials As Integer 'the number of good trials (where the lit key was pecked)
     Private TimeToFeed As Integer 'the amount of time the bird has to feed from the hopper
     Private ITI As Integer 'the intertrial interval
-    Private Declare Function timeGetTime Lib "winmm.dll" () As Long 'a function to allow us to get the current time
-    Public lngStartTime As Long 'the start time for our delay sub
-    Private nStimulusTime As Long 'the time we want the pecking key to be lit 
+    'Private Declare Function timeGetTime Lib "winmm.dll" () As Integer 'a function to allow us to get the current time
+    Public lngStartTime As Integer 'the start time for our delay sub
+    Private nStimulusTime As Integer 'the time we want the pecking key to be lit 
     Private bConditionalFood As Boolean 'says if the conditional button is checked
     Private StartLatency As DateTime 'the time when the trial starts
     Private CurrentLatency As TimeSpan 'the length of time from start of trial to end of trial
     Private TotalLatency As TimeSpan 'the sum of all the CurrentLatencies
-    Private MeanLatency As Decimal 'TotalLatency/GoodTrials
-    Private today As DateTime = DateTime.Now 'for today's date right now '
-    Private tomorrow As DateTime = DateTime.Today.AddDays(1) 'for tomorrow's date '
+    Private MeanLatency As Double 'TotalLatency/GoodTrials
     Private z As Integer 'counter
     Private strFile As String 'name of output path
     Private FeedStation As String 'feeding station
+    Private Function today() As Date
+        Return DateTime.Now.Date 'for today's date right now '
+    End Function
+
+    Private Function tomorrow() As Date
+        Return DateTime.Today.AddDays(1).Date 'for tomorrow's date '
+    End Function
+
 
 
     'Define whisker events
@@ -44,13 +54,17 @@ Public Class Form1
     Const End_Stimulus = "End_Stimulus"
     Const End_of_ITI = "End_of_ITI"
     Const starfeederRFID_EVENT = "starfeederRFID_EVENT" 'doesn't work yet as can't listen to messages 
+#End Region
 
     'Introduce a delay somewhere.  Just put Call delay(500) to get a delay of 
     '500ms
-    Public Sub delay(msdelay As Long)
-        lngStartTime = timeGetTime()
-        Do Until (timeGetTime() - lngStartTime > msdelay)
-        Loop
+    Public Sub delay(msdelay As Integer, Optional processEvents As Boolean = False) ' this is rather unsafe...
+        Dim StartTime As DateTime = Now(), elapsed As TimeSpan
+        Do
+            elapsed = Now - StartTime
+            'for longer delays, we might want to r
+            If processEvents Then Application.DoEvents()
+        Loop Until elapsed.TotalMilliseconds > msdelay
     End Sub
 
     'When called, the pecking key light will turn on 
@@ -91,16 +105,22 @@ Public Class Form1
     '1. Connect to the whisker server when the form is loaded and claim the lines we need
     Public Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         'Insert the date and time into the form as a default (but able to change this manually if nec.)
-        Me.txtDate.Text = tomorrow.ToShortDateString
+        Me.DatePicker.Value = tomorrow()
         Me.txtTime.Text = "07:00:00"
     End Sub
 
     '2. If we want to start the trial immediately, by checking this box, we get date and time info
-    Public Sub chkImmediate_Click(sender As Object, e As EventArgs) Handles chkImmediate.Click
-        Me.txtDate.Text = today.ToShortDateString
-        Me.txtTime.Text = today.ToLongTimeString
-    End Sub
+    'Public Sub chkImmediate_Click(sender As Object, e As EventArgs) Handles chkImmediate.Click
+    '    Me.txtDate.Text = today.ToShortDateString
+    '    Me.txtTime.Text = today.ToLongTimeString
+    'End Sub
 
+    '^^^^This^^^^ is rather peculiar. It would happen whenever the item is *clicked* (e.g. if *deselected*).
+    'as what we want is to 'ignore the date/time' if starting immediately, better to show this
+    Private Sub chkImmediate_CheckedChanged(sender As Object, e As EventArgs) Handles chkImmediate.CheckedChanged
+        Me.DatePicker.Enabled = Not chkImmediate.Checked
+        Me.txtTime.Enabled = Not chkImmediate.Checked
+    End Sub
     '3. Click the Connect button, to connect to the server, claim the line we need and make sure the Go
     'button is enabled
     Private Sub cmdConnect_Click(sender As Object, e As EventArgs) Handles cmdConnect.Click
@@ -117,10 +137,10 @@ Public Class Form1
         'Make sure that we are able to click the Go button
         cmdGo.Enabled = True
         'Get session variables from the form
-        iTotalTrials = Val(txtTotalTrials.Text)
-        TimeToFeed = Val(txtFeed.Text) * 1000
-        nStimulusTime = Val(txtStimulusTime.Text) * 1000
-        ITI = Val(txtITI.Text) * 1000
+        iTotalTrials = CInt(Val(txtTotalTrials.Text))
+        TimeToFeed = CInt(Val(txtFeed.Text) * 1000)
+        nStimulusTime = CInt(Val(txtStimulusTime.Text) * 1000)
+        ITI = CInt(Val(txtITI.Text) * 1000)
         bConditionalFood = chkConditionalFood.Checked
         FeedStation = txtFeedingStation.Text
         'name the output file:
@@ -139,14 +159,15 @@ Public Class Form1
         Me.txtFeed.Enabled = False
         Me.chkConditionalFood.Enabled = False
         Me.chkImmediate.Enabled = False
-        Me.txtDate.Enabled = False
+        Me.DatePicker.Enabled = False
         Me.txtTime.Enabled = False
         Me.txtDirectory.Enabled = False
         Randomize()
         iTrial = 0
         iSumTrials = 0
         GoodTrials = 0
-        z = 1
+        If chkImmediate.Checked Then Call StartSession()
+        'z = 1  <-redundant; deleted
         Call CheckTime()
     End Sub
 
@@ -156,31 +177,43 @@ Public Class Form1
         'Get the date and time variables from the form
         Dim formDt As String
         Dim formTi As String
-        formDt = txtDate.Text
+        formDt = DatePicker.Value.ToShortDateString
         formTi = txtTime.Text
         Dim formDtTi As String
         'Combine the date and time variables from the form
         formDtTi = String.Format(formDt & " " & formTi)
         Dim formDateTime As DateTime = DateTime.Parse(formDtTi)
-        'Set up a counter
-        Dim a As Integer = 0
-        'Start a loop. 1) check current date/time and z value. 2) If z>1 and current date/time is equal to/greater than the form date
-        'Then Call Start_Trial(). 3) If not, check the current date/time after 1ms. 4) Once conditions are satisfied, we need to 
-        'use the counter to break the loop, otherwise, we just keep calling start trial...
-        Do
-            If DateTime.Now.Year >= formDateTime.Year And DateTime.Now.Month >= formDateTime.Month And DateTime.Now.Day >= formDateTime.Day And DateTime.Now.Hour >= formDateTime.Hour And DateTime.Now.Minute >= formDateTime.Minute And z = 1 Then
-                Call Start_Trial()
-                Call Start_starfeeder()
-                a = a + 1
-            End If
+
+        'NOW
+        Do Until Now > formDateTime
             Threading.Thread.Sleep(1000)
-        Loop While (a < 1)
+        Loop
+        StartSession()
+
+        'WAS
+        'Set up a counter
+        'Dim a As Integer = 0
+        ''Start a loop. 1) check current date/time and z value. 2) If z>1 and current date/time is equal to/greater than the form date
+        ''Then Call Start_Trial(). 3) If not, check the current date/time after 1ms. 4) Once conditions are satisfied, we need to 
+        ''use the counter to break the loop, otherwise, we just keep calling start trial...
+        'Do
+        '    If DateTime.Now.Year >= formDateTime.Year And DateTime.Now.Month >= formDateTime.Month And DateTime.Now.Day >= formDateTime.Day And DateTime.Now.Hour >= formDateTime.Hour And DateTime.Now.Minute >= formDateTime.Minute And z = 1 Then
+        '        Call Start_Trial()
+        '        Call Start_starfeeder()
+        '        a = a + 1
+        '    End If
+        '    Threading.Thread.Sleep(1000)
+        'Loop While (a < 1)
+        '
+        '^^^this is horribly complex & thus difficult to read debug. e.g. z is redundant (it was set before the only possible call to the function). 
+
     End Sub
 
     'make sure we can start the starfeeder client when the first trial starts - need to work out how to programmatically
     'click the 'start' button on starfeeder client, or else just run the client from when we click 'go'
-    Private Sub Start_starfeeder()
+    Private Sub StartSession()
         Process.Start("C:\Users\User\Documents\StarFeeder\starfeeder_0.2.4_windows\starfeeder.exe")
+        Start_Trial()
     End Sub
 
     '6. when a trial is started, the key light is switched on and we set the whisker event Key_Peck
@@ -224,7 +257,7 @@ Public Class Form1
         GoodTrials = GoodTrials + 1
         CurrentLatency = DateTime.Now - StartLatency
         TotalLatency = TotalLatency + CurrentLatency
-        Dim Secs As Decimal = TotalLatency.TotalSeconds ' can't do division on datetimes, so conver to decimal first
+        Dim Secs As Double = TotalLatency.TotalSeconds ' can't do division on datetimes, so conver to decimal first
         MeanLatency = Secs / GoodTrials
         Me.TextBox1.Text = "FOOD DELIVERY"
         Call GiveFood()
@@ -257,7 +290,7 @@ Public Class Form1
     '11. Count the number of trials, total trials and then call the new trial sub after the specified
     'ITI interval from the form.  IDEALLY I'd like to add the MASS and RFID information from the starfeeder for each trial.
     Private Sub InterTrialInterval()
-        Dim CLatency As Decimal = CurrentLatency.TotalSeconds
+        Dim CLatency As Double = CurrentLatency.TotalSeconds
         iTrial = iTrial + 1
         iSumTrials = iSumTrials + 1
         Me.txtTrials.Text = Str(iTrial)
@@ -315,7 +348,7 @@ Public Class Form1
     End Sub
 
     'Would like to get this alert operator if whisker is disconnected
-    Private Sub Whisker_Disconnected(ByVal sender As Object, ByVal e As WHISKERSDKLib._DWhiskerSDKEvents) Handles Whisker.Disconnected
+    Private Sub Whisker_Disconnected(ByVal sender As Object, ByVal e As EventArgs) Handles Whisker.Disconnected
         Call Whisker.AlertOperator("Session over - Disconnected", True, False)
     End Sub
 
@@ -323,5 +356,6 @@ Public Class Form1
     Private Sub break(ByVal message As String)
         Call Whisker.AlertOperator(message, True, False)
     End Sub
+
 
 End Class

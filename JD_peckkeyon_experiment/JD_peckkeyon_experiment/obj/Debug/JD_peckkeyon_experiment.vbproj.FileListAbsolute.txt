@@ -16,3 +16,19 @@ C:\Users\User\Documents\2016 experiments\Visual Basic\JD_peckkeyon_experiment\JD
 C:\Users\User\Documents\2016 experiments\Visual Basic\JD_peckkeyon_experiment\JD_peckkeyon_experiment\obj\Debug\JD_peckkeyon_experiment.pdb
 C:\Users\User\Documents\2016 experiments\Visual Basic\JD_peckkeyon_experiment\JD_peckkeyon_experiment\bin\Debug\JD_training.exe.config
 C:\Users\User\Documents\2016 experiments\Visual Basic\JD_peckkeyon_experiment\JD_peckkeyon_experiment\bin\Debug\JD_peckkey.exe.config
+C:\Users\k1344274\Documents\GitHub\Newcastle_social_foraging\JD_peckkeyon_experiment\JD_peckkeyon_experiment\bin\Debug\JD_peckkeyon_experiment.exe.config
+C:\Users\k1344274\Documents\GitHub\Newcastle_social_foraging\JD_peckkeyon_experiment\JD_peckkeyon_experiment\obj\Debug\Interop.WHISKERSDKLib.dll
+C:\Users\k1344274\Documents\GitHub\Newcastle_social_foraging\JD_peckkeyon_experiment\JD_peckkeyon_experiment\obj\Debug\AxInterop.WHISKERSDKLib.dll
+C:\Users\k1344274\Documents\GitHub\Newcastle_social_foraging\JD_peckkeyon_experiment\JD_peckkeyon_experiment\obj\Debug\JD_peckkeyon_experiment.vbproj.ResolveComReference.cache
+C:\Users\k1344274\Documents\GitHub\Newcastle_social_foraging\JD_peckkeyon_experiment\JD_peckkeyon_experiment\obj\Debug\JD_peckkeyon_experiment.exe
+C:\Users\k1344274\Documents\GitHub\Newcastle_social_foraging\JD_peckkeyon_experiment\JD_peckkeyon_experiment\obj\Debug\JD_peckkeyon_experiment.xml
+C:\Users\k1344274\Documents\GitHub\Newcastle_social_foraging\JD_peckkeyon_experiment\JD_peckkeyon_experiment\obj\Debug\JD_peckkeyon_experiment.pdb
+C:\Users\k1344274\Documents\GitHub\Newcastle_social_foraging\JD_peckkeyon_experiment\JD_peckkeyon_experiment\bin\Debug\JD_peckkeyon_experiment.exe
+C:\Users\k1344274\Documents\GitHub\Newcastle_social_foraging\JD_peckkeyon_experiment\JD_peckkeyon_experiment\bin\Debug\JD_peckkeyon_experiment.pdb
+C:\Users\k1344274\Documents\GitHub\Newcastle_social_foraging\JD_peckkeyon_experiment\JD_peckkeyon_experiment\bin\Debug\JD_peckkeyon_experiment.xml
+C:\Users\k1344274\Documents\GitHub\Newcastle_social_foraging\JD_peckkeyon_experiment\JD_peckkeyon_experiment\bin\Debug\Interop.WHISKERSDKLib.dll
+C:\Users\k1344274\Documents\GitHub\Newcastle_social_foraging\JD_peckkeyon_experiment\JD_peckkeyon_experiment\bin\Debug\AxInterop.WHISKERSDKLib.dll
+C:\Users\k1344274\Documents\GitHub\Newcastle_social_foraging\JD_peckkeyon_experiment\JD_peckkeyon_experiment\obj\Debug\JD_peckkeyon_experiment.vbprojResolveAssemblyReference.cache
+C:\Users\k1344274\Documents\GitHub\Newcastle_social_foraging\JD_peckkeyon_experiment\JD_peckkeyon_experiment\obj\Debug\WindowsApplication1.Form1.resources
+C:\Users\k1344274\Documents\GitHub\Newcastle_social_foraging\JD_peckkeyon_experiment\JD_peckkeyon_experiment\obj\Debug\WindowsApplication1.Resources.resources
+C:\Users\k1344274\Documents\GitHub\Newcastle_social_foraging\JD_peckkeyon_experiment\JD_peckkeyon_experiment\obj\Debug\JD_peckkeyon_experiment.vbproj.GenerateResource.Cache
