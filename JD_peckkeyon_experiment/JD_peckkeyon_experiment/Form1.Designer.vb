@@ -60,6 +60,8 @@ Partial Class Form1
         Me.GroupBox3 = New System.Windows.Forms.GroupBox()
         Me.Timer1 = New System.Windows.Forms.Timer(Me.components)
         Me.txtTry2 = New System.Windows.Forms.TextBox()
+        Me.DebugTestButton = New System.Windows.Forms.Button()
+        Me.Label4 = New System.Windows.Forms.Label()
         CType(Me.Whisker, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GroupBox1.SuspendLayout()
         Me.GroupBox2.SuspendLayout()
@@ -247,7 +249,7 @@ Partial Class Form1
         Me.GroupBox2.Controls.Add(Me.chkImmediate)
         Me.GroupBox2.Location = New System.Drawing.Point(294, 48)
         Me.GroupBox2.Name = "GroupBox2"
-        Me.GroupBox2.Size = New System.Drawing.Size(156, 172)
+        Me.GroupBox2.Size = New System.Drawing.Size(156, 122)
         Me.GroupBox2.TabIndex = 46
         Me.GroupBox2.TabStop = False
         Me.GroupBox2.Text = "Start"
@@ -397,10 +399,30 @@ Partial Class Form1
         '
         'txtTry2
         '
-        Me.txtTry2.Location = New System.Drawing.Point(317, 226)
+        Me.txtTry2.Location = New System.Drawing.Point(294, 198)
+        Me.txtTry2.Multiline = True
         Me.txtTry2.Name = "txtTry2"
-        Me.txtTry2.Size = New System.Drawing.Size(130, 20)
+        Me.txtTry2.Size = New System.Drawing.Size(156, 75)
         Me.txtTry2.TabIndex = 65
+        '
+        'DebugTestButton
+        '
+        Me.DebugTestButton.Location = New System.Drawing.Point(195, 3)
+        Me.DebugTestButton.Name = "DebugTestButton"
+        Me.DebugTestButton.Size = New System.Drawing.Size(133, 30)
+        Me.DebugTestButton.TabIndex = 66
+        Me.DebugTestButton.Text = "DebugTestButton"
+        Me.DebugTestButton.UseVisualStyleBackColor = True
+        Me.DebugTestButton.Visible = False
+        '
+        'Label4
+        '
+        Me.Label4.AutoSize = True
+        Me.Label4.Location = New System.Drawing.Point(297, 179)
+        Me.Label4.Name = "Label4"
+        Me.Label4.Size = New System.Drawing.Size(61, 13)
+        Me.Label4.TabIndex = 67
+        Me.Label4.Text = "Last Event:"
         '
         'Form1
         '
@@ -408,7 +430,9 @@ Partial Class Form1
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.AutoSize = True
         Me.BackColor = System.Drawing.SystemColors.Control
-        Me.ClientSize = New System.Drawing.Size(462, 465)
+        Me.ClientSize = New System.Drawing.Size(462, 481)
+        Me.Controls.Add(Me.Label4)
+        Me.Controls.Add(Me.DebugTestButton)
         Me.Controls.Add(Me.txtTry2)
         Me.Controls.Add(Me.GroupBox3)
         Me.Controls.Add(Me.cmdConnect)
@@ -470,4 +494,6 @@ Partial Class Form1
     Friend WithEvents Timer1 As Timer
     Friend WithEvents txtTry2 As TextBox
     Friend WithEvents DatePicker As DateTimePicker
+    Friend WithEvents DebugTestButton As Button
+    Friend WithEvents Label4 As Label
 End Class

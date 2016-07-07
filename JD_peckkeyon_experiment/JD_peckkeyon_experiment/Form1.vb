@@ -54,6 +54,9 @@ Public Class Form1
     Const End_Stimulus = "End_Stimulus"
     Const End_of_ITI = "End_of_ITI"
     Const starfeederRFID_EVENT = "starfeederRFID_EVENT" 'doesn't work yet as can't listen to messages 
+
+    Private mostRecentstarfeederEvent As StarFeeder.StarFeederEvent = Nothing
+
 #End Region
 
     'Introduce a delay somewhere.  Just put Call delay(500) to get a delay of 
@@ -107,6 +110,9 @@ Public Class Form1
         'Insert the date and time into the form as a default (but able to change this manually if nec.)
         Me.DatePicker.Value = tomorrow()
         Me.txtTime.Text = "07:00:00"
+#If DEBUG Then
+        Me.DebugTestButton.Visible = True
+#End If
     End Sub
 
     '2. If we want to start the trial immediately, by checking this box, we get date and time info
@@ -238,13 +244,13 @@ Public Class Form1
         End Select
     End Sub
 
-    'THIS IS MY ATTEMPT TO RECEIVE THE RFID EVENTS... AT THE MOMENT I DON'T THINK THAT THIS CLIENT IS LISTENING
-    Private Sub Whisker_ClientMessage(ByVal sender As Object, ByVal e As AxWHISKERSDKLib._DWhiskerSDKEvents_ClientMessageEvent) Handles Whisker.ClientMessage
-        Dim Message As String = e.message, Timestamp As Integer = e.timeStamp
-        Select Case Message
-            Case starfeederRFID_EVENT : MessageBox.Show("RFID event!") 'this will be changed to be more useful in the future
-        End Select
-    End Sub
+    ''THIS IS MY ATTEMPT TO RECEIVE THE RFID EVENTS... AT THE MOMENT I DON'T THINK THAT THIS CLIENT IS LISTENING
+    'Private Sub Whisker_ClientMessage(ByVal sender As Object, ByVal e As AxWHISKERSDKLib._DWhiskerSDKEvents_ClientMessageEvent) Handles Whisker.ClientMessage
+    '    Dim Message As String = e.message, Timestamp As Integer = e.timeStamp
+    '    Select Case Message
+    '        Case starfeederRFID_EVENT : MessageBox.Show("RFID event!") 'this will be changed to be more useful in the future
+    '    End Select
+    'End Sub
 
 
     '8. The peck sub says turn off key light (leaving the key image shape/colour as before), clear the
@@ -357,5 +363,32 @@ Public Class Form1
         Call Whisker.AlertOperator(message, True, False)
     End Sub
 
+    Private Sub Whisker_ClientMessage(sender As Object, e As _DWhiskerSDKEvents_ClientMessageEvent) Handles Whisker.ClientMessage
+        Try
+            mostRecentstarfeederEvent = New StarFeederEvent(e.message, e.timeStamp)
+            With Me.txtTry2
+                .Text = "StarFeederEvent"
+                .AppendText(mostRecentstarfeederEvent.Reader & " : ")
+                .AppendText(mostRecentstarfeederEvent.RFID.ToString & vbNewLine)
+                .AppendText(mostRecentstarfeederEvent.Balance & " : ")
+                .AppendText(mostRecentstarfeederEvent.MassKg.ToString & " kg" & vbNewLine)
+                .AppendText(mostRecentstarfeederEvent.timestamp.ToLongTimeString)
+                .AppendText(mostRecentstarfeederEvent.timestamp.ToLongDateString)
+            End With
+        Catch ex As Exception
+            txtTry2.Text = e.message
+        End Try
+    End Sub
 
+    Private Sub DebugTestButton_Click(sender As Object, e As EventArgs) Handles DebugTestButton.Click
+        Static alternate As Boolean = False
+        'This button only appears when compiled as a debug build
+        'Useful place to put tests in
+        If alternate Then
+            Call Me.Whisker_ClientMessage(Nothing, New _DWhiskerSDKEvents_ClientMessageEvent(0, StarFeeder.test1, 0))
+        Else
+            Call Me.Whisker_ClientMessage(Nothing, New _DWhiskerSDKEvents_ClientMessageEvent(0, StarFeeder.test2, 0))
+        End If
+        alternate = Not alternate
+    End Sub
 End Class
